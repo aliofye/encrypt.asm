@@ -79,7 +79,7 @@ input:  la $a0,prompt           #display message "Enter the message to be encryp
 
         la $a0,msg              # a0   address of string
         li $a1,100              # v0 = 8, indicates input of a string
-	li $v0, 8               	# a1 = 100, indicates string length
+	li $v0, 8               # a1 = 100, indicates string length
         syscall
 
 
@@ -109,13 +109,13 @@ input:  la $a0,prompt           #display message "Enter the message to be encryp
 
 #######################message counter#####################################
 count:  la $t0,msg  	        #t0 = address of string
-	li $t1,0	        		#t1 = address of counter set to 0
+	li $t1,0	        #t1 = address of counter set to 0
 
 cloop:	lb $t2,($t0)            #load byte at $t2 from $t0
-	sub $t3, $t2, 10			#t3 = address of the decremented counter
-	beqz $t3,cmove				#branch to step 9
-	addi $t0, $t0, 1			#increment address of the str
-	addi $t1, $t1, 1			#increment the counter
+	sub $t3, $t2, 10	#t3 = address of the decremented counter
+	beqz $t3,cmove		#branch to step 9
+	addi $t0, $t0, 1	#increment address of the str
+	addi $t1, $t1, 1	#increment the counter
 	j cloop
 	syscall
 
@@ -163,14 +163,14 @@ nprint: la $a0,nmsg             #print encrypted message
         li $v0,4
         syscall
 
-	la $a0,promptc          	#Asks the user if they would like to decrypt their recently encryped message
+	la $a0,promptc          #Asks the user if they would like to decrypt their recently encryped message
 	li $v0,4
 	syscall
 
-	li $v0,5                	#reads user input and stores in $v0
+	li $v0,5                #reads user input and stores in $v0
 	syscall
 
-	beq $v0,1,adcrypt       	#if user input is equalk to 1, it will jump to the immediate decryption program
+	beq $v0,1,adcrypt       #if user input is equalk to 1, it will jump to the immediate decryption program
 
         jr $ra                  #return to main program
 
@@ -183,7 +183,7 @@ adcrypt:lw $t5,max              #set up max for nloop
         li $t3,0                #set up counter
         li $t6,0                #set up restore register
 
-adloop: lb $t4,nmsg($t2)       #take char at byte $t2 from msg
+adloop: lb $t4,nmsg($t2)       	#take char at byte $t2 from msg
 
         move $t6,$t4            #make a copy of x to restore if need be
         add $t4,$t4,$t0         #encrypt using formula y = a+x-b
@@ -193,8 +193,8 @@ adloop: lb $t4,nmsg($t2)       #take char at byte $t2 from msg
         bge $t4,127,adrstr      #if x is >= 127, that means the character won't be legible to the user so we restore the original one
         j adgo
 
-adrstr: move $t4,$t6           #restore original character
-adgo:   sb $t4,smsg($t2)       #save char at byte $t0 from nmsg
+adrstr: move $t4,$t6           	#restore original character
+adgo:   sb $t4,smsg($t2)       	#save char at byte $t0 from nmsg
 
         beq $t3,$t5,adprint     #if $t3 = $t5, print character
         addi $t2,$t2,1          #increment $t2
@@ -207,20 +207,20 @@ adprint:la $a0,smsg             #print encrypted message
 
 #################################reinitialize arrays####################################
 zero: 	lw $t5,max              #set up max for nloop
-	sub $t5,$t5,1           	#offset the max by one (for some reason the program will only work like so)
-	lw $t0,akey             	#set up first key
+	sub $t5,$t5,1           #offset the max by one (for some reason the program will only work like so)
+	lw $t0,akey             #set up first key
         lw $t1,bkey             #set up second key
         li $t2,0                #set up array index
         li $t3,0                #set up counter
         li $t4,0                #set up zero out register
 
-zloop:  sb $t4,msg($t2)			#save char at byte $t0 from msg
-	sb $t4,nmsg($t2)        	#save char at byte $t0 from nmsg
-	sb $t4,smsg($t2)        	#save char at byte $t0 from smsg
+zloop:  sb $t4,msg($t2)		#save char at byte $t0 from msg
+	sb $t4,nmsg($t2)        #save char at byte $t0 from nmsg
+	sb $t4,smsg($t2)        #save char at byte $t0 from smsg
 
-	beq $t3,$t5,end      		#if $t3 = $t5, print character
-	addi $t2,$t2,1          	#increment $t2
-	addi $t3,$t3,1          	#increment $t3
+	beq $t3,$t5,end      	#if $t3 = $t5, print character
+	addi $t2,$t2,1          #increment $t2
+	addi $t3,$t3,1          #increment $t3
 	j zloop
 
 end:    jr $ra                  #return to main program
